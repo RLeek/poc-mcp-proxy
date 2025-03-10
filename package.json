@@ -1,0 +1,22 @@
+{
+  "name": "poc-mcp-proxy",
+  "version": "1.0.0",
+  "description": "poc mcp proxy",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Soorria Saruva <soorria.ss@gmail.com> (https://soorria.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.4",
+    "tsx": "^4.19.3"
+  }
+}
