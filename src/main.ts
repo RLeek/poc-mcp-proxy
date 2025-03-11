@@ -28,12 +28,20 @@ const server = new Server(
 )
 
 const TOKEN = process.argv[2] ?? process.env.RELEVANCE_AUTH_TOKEN
+const REGION = process.argv[3] ?? process.env.RELEVANCE_REGION
 if (!TOKEN) {
   log({ message: 'unset', TOKEN })
   throw new Error('RELEVANCE_AUTH_TOKEN is not set')
 }
 
-const BASE_API_URL = 'https://api-1e3042.stack.tryrelevance.com/latest'
+if (!REGION) {
+  log({ message: 'unset', REGION })
+  throw new Error('RELEVANCE_REGION is not set')
+}
+
+const BASE_API_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`
+
+log({ message: 'start', REGION, BASE_API_URL })
 
 server.setRequestHandler(ListToolsRequestSchema, async request => {
   const tools = await listTools()
@@ -41,7 +49,7 @@ server.setRequestHandler(ListToolsRequestSchema, async request => {
   return {
     tools: tools.map((tool): ListToolsResult['tools'][number] => {
       return {
-        name: tool.title?.replace(' ', '_') ?? 'unknown_tool',
+        name: tool.title,
         inputSchema: {
           type: 'object',
           ...tool.params_schema,
@@ -151,7 +159,9 @@ async function listTools() {
     .map(tool => {
       return {
         ...tool,
-        title: tool.title?.replace(' ', '_') ?? 'unknown_tool',
+        // title: tool.title?.replace(' ', '_') ?? 'unknown_tool',
+        title: tool.title ?? 'unknown tool',
+
         description: tool.description ?? 'No description',
         params_schema: tool.params_schema ?? {},
       }
