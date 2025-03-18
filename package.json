@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/main.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "codegen": "npx tsx scripts/better-api-types.ts"
   },
   "keywords": [],
   "author": "Soorria Saruva <soorria.ss@gmail.com> (https://soorria.com/)",
