@@ -10,5 +10,5 @@ done
 
 cd $root
 
-npm run start 2>> $root/log.txt
+npm run --silent start 2>> $root/log.txt
 
