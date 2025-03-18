@@ -159,8 +159,9 @@ async function listTools() {
     .map(tool => {
       return {
         ...tool,
-        // title: tool.title?.replace(' ', '_') ?? 'unknown_tool',
-        title: tool.title ?? 'unknown tool',
+        // This is required for claude
+        title: tool.title?.replace(' ', '_') ?? 'unknown_tool',
+        //title: tool.title ?? 'unknown tool',
 
         description: tool.description ?? 'No description',
         params_schema: tool.params_schema ?? {},
