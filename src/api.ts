@@ -71,7 +71,7 @@ export const listTools = async (
     .map(tool => {
       return {
         ...tool,
-        title: tool.title?.replace(' ', '_') ?? 'unknown_tool',
+        title: tool.title?.replaceAll(' ', '_') ?? 'unknown_tool',
         description: tool.description ?? 'No description',
         params_schema: tool.params_schema ?? {}
       }
