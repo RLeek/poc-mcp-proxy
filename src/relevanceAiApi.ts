@@ -37,7 +37,6 @@ export async function listTools(studios: Array<{studioIds: string}>) {
     return cache
   }
 
-  studios;
   const seenTitle = new Set<string>()
 
   const searchParams = new URLSearchParams({
