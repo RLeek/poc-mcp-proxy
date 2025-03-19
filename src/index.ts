@@ -4,11 +4,13 @@ import {
   ListToolsResult,
   CallToolRequestSchema,
   CallToolResult,
+  Tool,
+  CallToolRequest,
+  JSONRPCError
 } from '@modelcontextprotocol/sdk/types.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
-import { getTools, listTools, runTool } from './Api.js';
+import { listTools, runTool } from './api.js';
 
-// Create server
 const server = new Server(
   {
     name: 'relevanceAi-mcp-server',
@@ -21,8 +23,10 @@ const server = new Server(
   }
 )
 
-// Todo: Fix getting environment variables
+// todo: Fix getting environment variables
 // and make sure they are correct when in use
+// Do we want to give a list or something else
+// Validate this
 export const TOKEN = process.env.RELEVANCE_AUTH_TOKEN!;
 if (!TOKEN) {
   throw new Error('RELEVANCE_AUTH_TOKEN is not set')
@@ -33,57 +37,65 @@ if (!REGION) {
   throw new Error('RELEVANCE_REGION is not set')
 }
 
-export const TOOLS = process.env.TOOLS?.split(" ")!;
-if (!TOOLS) {
+export const TOOL_IDS = process.env.TOOL_IDS?.split(" ")!;
+if (!TOOL_IDS) {
   throw new Error("TOOLS is not set")
 }
 
-
+// todo: Handle this better/put it in a nicer way
 export var BASE_API_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`
 
-server.setRequestHandler(ListToolsRequestSchema, async request => {
-  const tools = await listTools(TOOLS)
-  return {
-    // So this just maps to the schema
-    tools: tools
-      .map((tool):ListToolsResult['tools'][number] => {
-        return {
-          name: tool.title,
-          inputSchema: {
-            type: 'object',
-            ...tool.params_schema,
-          },
-          description: tool.description ?? 'No description',
-        }
-      })
-  }
+server.setRequestHandler(
+  ListToolsRequestSchema, 
+  async (request):Promise<ListToolsResult> => {
+    const tools = await listTools(TOOL_IDS)
+    return {
+      tools: tools
+        .map((tool):Tool => {
+          return {
+            name: tool.title,
+            inputSchema: {
+              type: 'object',
+              ...tool.params_schema,
+            },
+            description: tool.description
+          }
+        })
+    }
 })
 
-// Call tool
 server.setRequestHandler(
   CallToolRequestSchema,
-  async (request): Promise<CallToolResult> => {
-    const tools = await listTools([])
+  async (request:CallToolRequest): Promise<CallToolResult | JSONRPCError> => {
+    const tools = await listTools(TOOL_IDS)
 
     const tool = tools.find(tool => tool.title === request.params.name)
 
+    // todo: not sure about this
     if (!tool) {
       return {
-        isError: true,
-        content: [
-          {
-            type: 'text',
-            text: `Tool ${request.params.name} not found`,
-          },
-        ],
+        "jsonrpc": "2.0",
+        "id": 3,
+        "error": {
+          "code": -32602,
+          "message": `Unknown tool: ${request.params.name}`
+        }      
       }
     }
 
-    // should return last lement
     const result = await runTool(tool, request.params.arguments ?? {})
-
     const finalResult = result.updates[result.updates.length-1];
-    if (finalResult.type === "chain-fail") {
+  
+    if (result.type === "complete") {
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(finalResult.output.output, null, 2)
+          }
+        ]
+      }
+    } else if (result.type === "failed") {
       return {
         isError: true,
         content: [
@@ -93,21 +105,13 @@ server.setRequestHandler(
           }
         ]
       }
-    } else if (finalResult.type === "chain-success") {
+    } else { // Chain timeout
       return {
+        isError: true,
         content: [
           {
             type: "text",
-            text: JSON.stringify(finalResult.output.output, null, 2)
-          }
-        ]
-      }
-    } else {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "ERROR"
+            text: "Time limit exceeded"
           }
         ]
       }
@@ -115,8 +119,6 @@ server.setRequestHandler(
   }
 )
 
-
-// initial start (this will actually work)
 async function runServer() {
   const transport = new StdioServerTransport();
   await server.connect(transport);

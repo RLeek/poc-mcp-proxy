@@ -1,12 +1,14 @@
 import { BASE_API_URL, TOKEN } from './index.js'
-import { cleanAnthropicInput } from './llm_param_cleaner.js'
-import { Studio } from './types.js'
-import { StudioAsyncPollOutput, TriggerStudioAsyncOutput } from './types/codegen/better-api.js'
+import { StudioAsyncPollOutput, TriggerStudioAsyncInput, TriggerStudioAsyncOutput } from './types/codegen/better-api.js'
+import { Studio } from './types/studio.js'
+import { Delay } from './utilities.js';
 
-export async function fetchRelevance<T>(
+const DELAYTIME = 1000;
+
+export const fetchRelevance = async <T,>(  
   path: `/${string}`,
   init?: RequestInit
-): Promise<T> {
+): Promise<T> => {
   const response = await fetch(`${BASE_API_URL}${path}`, {
     ...init,
     headers: {
@@ -25,18 +27,20 @@ export async function fetchRelevance<T>(
   return response.json()
 }
 
-export async function getTools(studioIds: Array<string>) {
-  const tools: Studio[] = []
-  for (const studioId of studioIds) {
-    tools.push(await fetchRelevance(
-      `/studios/${studioId}/get`
-    ))
+let toolCache:
+  | (Studio & {
+      title: string
+      description: string
+      params_schema: Record<string, any>
+    })[]
+  | null = null
+export const listTools = async (
+  studios: Array<string>
+) => {
+  if (toolCache) {
+    return toolCache
   }
-  console.error("TOOLS ARE")
-  console.error(tools)
-}
 
-export async function listTools(studios: Array<string>) {
   const searchParams = new URLSearchParams({
     filters: JSON.stringify([
       {
@@ -44,36 +48,42 @@ export async function listTools(studios: Array<string>) {
         field: 'project',
         condition_value: TOKEN.split(':')[0],
       },
+      {
+        filter_type: 'or',
+        condition_value: 
+          studios.map((studio) => {
+            return {
+              filter_type: 'exact_match',
+              field: 'studio_id',
+              condition_value: studio
+            }
+          }
+         )
+      }
     ]),
     page_size: '1000',
-  }).toString()
+  });
 
-  // Fetch based on url search params
   const tools = await fetchRelevance<{ results: Studio[] }>(
-    `/studios/list?${searchParams}`
+    `/studios/list?${searchParams.toString()}`
   )
-
-  // Return results 
-  return tools.results
+  toolCache = tools.results
     .map(tool => {
-      return cleanAnthropicInput({
+      return {
         ...tool,
-        // This is required for claude
-        // Clean up for claude so it makes sense 
         title: tool.title?.replace(' ', '_') ?? 'unknown_tool',
         description: tool.description ?? 'No description',
         params_schema: tool.params_schema ?? {}
-      })
+      }
     })
+  return toolCache
+
 }
 
-// todo: Will need to replace with frontend long polling logic 
-// Check fronend for how to implement this
-export async function runTool(tool: Studio, params: Record<string, any>) {
-  // Rewrite this so it works nicely with asynchronous polling s
-
-
-  // So it mios
+export const runTool = async (
+  tool: Studio, 
+  params: TriggerStudioAsyncInput
+) => {
   const response = await fetchRelevance<TriggerStudioAsyncOutput>(
     `/studios/${tool.studio_id}/trigger_async`,
     {
@@ -82,32 +92,30 @@ export async function runTool(tool: Studio, params: Record<string, any>) {
     }
   )
 
-  let runToolStatus = {
-    status: "inprogress",
-    job: response.job_id,
-    project: response.project,
-    studio: response.studio_id
-  }
-
-  return await waitTillToolFinished(runToolStatus);
+  return await pollForCompletion(response);
 }
 
+export const pollForCompletion = async (
+  runningToolDetails: TriggerStudioAsyncOutput
+): Promise<StudioAsyncPollOutput> => {
+  const {job_id, studio_id} = runningToolDetails;
 
-// How do we integrate this with claude if something is taking too long
-// (claude needs to send a kill instruction???)
-// Mhmm not sure if that is required
+  let response = await fetchRelevance<StudioAsyncPollOutput>(
+    `/studios/${studio_id}/async_poll/${job_id}`,
+    {
+      method: 'GET'
+    }
+  )
 
-async function waitTillToolFinished(runToolStatus: {status: string, job: string, project: string, studio: string}) {
-  let response: StudioAsyncPollOutput;
-  while (runToolStatus.status === "inprogress") {
+  while (response.type === "inprogress") {
     response = await fetchRelevance<StudioAsyncPollOutput>(
-      `/studios/${runToolStatus.studio}/async_poll/${runToolStatus.job}`,
+      `/studios/${studio_id}/async_poll/${job_id}`,
       {
         method: 'GET',
       }
     )
-    runToolStatus.status = response.type
-    new Promise( resolve => setTimeout(resolve, 100));
+    Delay(DELAYTIME);
   }
-  return response!
+
+  return response;
 }
