@@ -23,27 +23,23 @@ const server = new Server(
   }
 )
 
-// todo: Fix getting environment variables
-// and make sure they are correct when in use
-// Do we want to give a list or something else
-// Validate this
-export const TOKEN = process.env.RELEVANCE_AUTH_TOKEN!;
-if (!TOKEN) {
+
+if (!process.env.RELEVANCE_AUTH_TOKEN) {
   throw new Error('RELEVANCE_AUTH_TOKEN is not set')
 }
+export const TOKEN = process.env.RELEVANCE_AUTH_TOKEN
 
-export const REGION = process.env.RELEVANCE_REGION!;
-if (!REGION) {
+if (!process.env.RELEVANCE_REGION) {
   throw new Error('RELEVANCE_REGION is not set')
 }
+export const REGION = process.env.RELEVANCE_REGION
 
-export const TOOL_IDS = process.env.TOOL_IDS?.split(" ")!;
-if (!TOOL_IDS) {
+if (!process.env.TOOL_IDS) {
   throw new Error("TOOLS is not set")
 }
+export const TOOL_IDS = JSON.parse(process.env.TOOL_IDS);
 
-// todo: Handle this better/put it in a nicer way
-export var BASE_API_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`
+export const BASE_API_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`
 
 server.setRequestHandler(
   ListToolsRequestSchema, 

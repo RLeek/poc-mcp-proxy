@@ -5,6 +5,7 @@ import { Delay } from './utilities.js';
 
 const DELAYTIME = 1000;
 
+
 export const fetchRelevance = async <T,>(  
   path: `/${string}`,
   init?: RequestInit

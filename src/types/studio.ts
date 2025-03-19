@@ -1,3 +1,3 @@
-import { GetStudioOutput, ListStudiosOutput } from "./codegen/better-api.js";
+import { GetStudioOutput } from "./codegen/better-api.js";
 
 export type Studio = GetStudioOutput["studio"]
