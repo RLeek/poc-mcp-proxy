@@ -1,6 +1,6 @@
-import { BASE_API_URL, TOKEN } from './constantsAndEnv.js'
+import { BASE_API_URL, TOKEN } from './index.js'
 import { cleanAnthropicInput } from './llm_param_cleaner.js'
-import { Studio, TriggerStudioOutput } from './types.js'
+import { Studio } from './types.js'
 import { StudioAsyncPollOutput, TriggerStudioAsyncOutput } from './types/codegen/better-api.js'
 
 export async function fetchRelevance<T>(
@@ -25,20 +25,18 @@ export async function fetchRelevance<T>(
   return response.json()
 }
 
-let cache:
-  | (Studio & {
-      title: string
-      description: string
-      params_schema: Record<string, any>
-    })[]
-  | null = null
-
-
-export async function listTools(studios: Array<{studioIds: string}>) {
-  if (cache) {
-    return cache
+export async function getTools(studioIds: Array<string>) {
+  const tools: Studio[] = []
+  for (const studioId of studioIds) {
+    tools.push(await fetchRelevance(
+      `/studios/${studioId}/get`
+    ))
   }
+  console.error("TOOLS ARE")
+  console.error(tools)
+}
 
+export async function listTools(studios: Array<string>) {
   const searchParams = new URLSearchParams({
     filters: JSON.stringify([
       {
@@ -56,7 +54,7 @@ export async function listTools(studios: Array<{studioIds: string}>) {
   )
 
   // Return results 
-  cache = tools.results
+  return tools.results
     .map(tool => {
       return cleanAnthropicInput({
         ...tool,
@@ -67,8 +65,6 @@ export async function listTools(studios: Array<{studioIds: string}>) {
         params_schema: tool.params_schema ?? {}
       })
     })
-
-  return cache
 }
 
 // todo: Will need to replace with frontend long polling logic 
@@ -76,6 +72,8 @@ export async function listTools(studios: Array<{studioIds: string}>) {
 export async function runTool(tool: Studio, params: Record<string, any>) {
   // Rewrite this so it works nicely with asynchronous polling s
 
+
+  // So it mios
   const response = await fetchRelevance<TriggerStudioAsyncOutput>(
     `/studios/${tool.studio_id}/trigger_async`,
     {
@@ -97,6 +95,7 @@ export async function runTool(tool: Studio, params: Record<string, any>) {
 
 // How do we integrate this with claude if something is taking too long
 // (claude needs to send a kill instruction???)
+// Mhmm not sure if that is required
 
 async function waitTillToolFinished(runToolStatus: {status: string, job: string, project: string, studio: string}) {
   let response: StudioAsyncPollOutput;
@@ -107,8 +106,8 @@ async function waitTillToolFinished(runToolStatus: {status: string, job: string,
         method: 'GET',
       }
     )
-    console.error(response);
     runToolStatus.status = response.type
+    new Promise( resolve => setTimeout(resolve, 100));
   }
   return response!
 }

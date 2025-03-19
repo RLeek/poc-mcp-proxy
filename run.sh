@@ -2,15 +2,15 @@
 
 root=$(dirname "$0")
 
-for line in $(cat $root/.env); do
-  key=$(echo $line | cut -d '=' -f 1)
-  value=$(echo $line | cut -d '=' -f 2)
-  export $key=$value
-done
+# There are some stupid quirks with this file
+# Need to find a better alternative for running things like this
+# hmm 
 
-cd $root
-
-rm $root/log.txt
+while read LINE; do
+  key=$(echo $LINE | cut -d '=' -f 1)
+  value=$(echo $LINE | cut -d '=' -f 2)
+  export $key="$value"
+done < $root/.env
 
 npm run --silent start 2>> $root/log.txt
 
