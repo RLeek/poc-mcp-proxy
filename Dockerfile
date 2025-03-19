@@ -3,16 +3,16 @@ FROM node:22.12-alpine AS builder
 WORKDIR /app
 
 # Copy package files
-COPY package.json package-lock.json ./
+COPY package*.json ./
 
-# Install pnpm and dependencies
-RUN npm install
+# Install dependencies
+RUN npm ci
 
 # Copy application code
 COPY . .
 
-# Build TypeScript
+# Build the application
 RUN npm run build
 
-# Command will be provided by smithery.yaml
-CMD ["node", "dist/index.js"] 
+
+ENTRYPOINT ["node", "dist/index.js"]
