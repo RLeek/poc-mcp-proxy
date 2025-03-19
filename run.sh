@@ -10,5 +10,7 @@ done
 
 cd $root
 
+rm $root/log.txt
+
 npm run --silent start 2>> $root/log.txt
 
