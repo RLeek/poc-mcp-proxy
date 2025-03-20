@@ -35,6 +35,21 @@ server.setRequestHandler(
     });
 
     const tools = await listTools(consts().TOOL_IDS)
+
+    return {
+      tools: [
+        {
+          name: "Title",
+          inputSchema: {
+            type: 'object',
+            ...{}
+          },
+          description: "Description"
+        }
+      ]
+    }
+
+
     return {
       tools: tools
         .map((tool):Tool => {
