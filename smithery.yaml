@@ -7,7 +7,6 @@ startCommand:
     required:
       - relevanceAuthToken
       - relevanceRegion
-      - toolIds
     properties:
       relevanceAuthToken:
         type: string
@@ -15,24 +14,15 @@ startCommand:
       relevanceRegion:
         type: string
         description: The region for the user accessing the relevanceAI API
-      toolIds:
-        type: array
-        items: {
-          type: string
-        }
-        description: The list of tools to access from relevanceAI API
 
   commandFunction:
     # A function that produces the CLI command to start the MCP on stdio.
     |-
     (config) => ({ 
-      command: 'node', 
-      args: [
-        'dist/index.js'
-      ], 
+      command: 'node',
+      args: ['dist/index.js'], 
       env: { 
         RELEVANCE_AUTH_TOKEN: config.relevanceAuthToken,
         RELEVANCE_REGION: config.relevanceRegion,
-        TOOL_IDs: config.toolIds
       }
     })
