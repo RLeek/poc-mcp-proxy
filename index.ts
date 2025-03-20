@@ -28,6 +28,10 @@ server.setRequestHandler(
   ListToolsRequestSchema, 
   async (request):Promise<ListToolsResult> => {
     console.error("ListTool called")
+    server.sendLoggingMessage({
+      level: "info",
+      data: "ListTool called",
+    });
 
     const tools = await listTools(consts().TOOL_IDS)
     return {
@@ -49,6 +53,10 @@ server.setRequestHandler(
   CallToolRequestSchema,
   async (request:CallToolRequest): Promise<CallToolResult | JSONRPCError> => {
     console.error("CallTool called")
+    server.sendLoggingMessage({
+      level: "info",
+      data: "CallTool called",
+    });
 
     const tools = await listTools(consts().TOOL_IDS)
     const tool = tools.find(tool => tool.title === request.params.name)
@@ -105,6 +113,10 @@ async function runServer() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   consts() // remove this
+  server.sendLoggingMessage({
+    level: "info",
+    data: "Server started successfully",
+  });
   console.error("RelevanceAi MCP Server running on stdio");
 }
 
