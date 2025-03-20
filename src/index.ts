@@ -10,6 +10,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { listTools, runTool } from './api.js';
+import { consts } from './utilities.js';
 
 const server = new Server(
   {
@@ -23,28 +24,10 @@ const server = new Server(
   }
 )
 
-
-if (!process.env.RELEVANCE_AUTH_TOKEN) {
-  throw new Error('RELEVANCE_AUTH_TOKEN is not set')
-}
-export const TOKEN = process.env.RELEVANCE_AUTH_TOKEN
-
-if (!process.env.RELEVANCE_REGION) {
-  throw new Error('RELEVANCE_REGION is not set')
-}
-export const REGION = process.env.RELEVANCE_REGION
-
-if (!process.env.TOOL_IDS) {
-  throw new Error("TOOLS is not set")
-}
-export const TOOL_IDS = JSON.parse(process.env.TOOL_IDS);
-
-export const BASE_API_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`
-
 server.setRequestHandler(
   ListToolsRequestSchema, 
   async (request):Promise<ListToolsResult> => {
-    const tools = await listTools(TOOL_IDS)
+    const tools = await listTools(consts().TOOL_IDS)
     return {
       tools: tools
         .map((tool):Tool => {
@@ -63,7 +46,7 @@ server.setRequestHandler(
 server.setRequestHandler(
   CallToolRequestSchema,
   async (request:CallToolRequest): Promise<CallToolResult | JSONRPCError> => {
-    const tools = await listTools(TOOL_IDS)
+    const tools = await listTools(consts().TOOL_IDS)
 
     const tool = tools.find(tool => tool.title === request.params.name)
 

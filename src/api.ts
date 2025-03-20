@@ -1,7 +1,6 @@
-import { BASE_API_URL, TOKEN } from './index.js'
 import { StudioAsyncPollOutput, TriggerStudioAsyncInput, TriggerStudioAsyncOutput } from './types/codegen/better-api.js'
 import { Studio } from './types/studio.js'
-import { Delay } from './utilities.js';
+import { consts, Delay } from './utilities.js';
 
 const DELAYTIME = 1000;
 
@@ -10,10 +9,10 @@ export const fetchRelevance = async <T,>(
   path: `/${string}`,
   init?: RequestInit
 ): Promise<T> => {
-  const response = await fetch(`${BASE_API_URL}${path}`, {
+  const response = await fetch(`${consts().BASE_API_URL}${path}`, {
     ...init,
     headers: {
-      Authorization: TOKEN,
+      Authorization: consts().TOKEN,
     },
   })
 
