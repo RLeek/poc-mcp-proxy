@@ -34,19 +34,16 @@ if (!process.env.RELEVANCE_REGION) {
 }
 export const REGION = process.env.RELEVANCE_REGION
 
+if (!process.env.TOOL_IDS) {
+  throw new Error("TOOLS is not set")
+}
+export const TOOL_IDS = JSON.parse(process.env.TOOL_IDS);
+
 export const BASE_API_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`
 
 server.setRequestHandler(
   ListToolsRequestSchema, 
   async (request):Promise<ListToolsResult> => {
-
-
-    if (!process.env.TOOL_IDS) {
-      throw new Error("TOOLS is not set")
-    }
-    const TOOL_IDS = JSON.parse(process.env.TOOL_IDS);
-    
-    
     const tools = await listTools(TOOL_IDS)
     return {
       tools: tools
@@ -66,12 +63,6 @@ server.setRequestHandler(
 server.setRequestHandler(
   CallToolRequestSchema,
   async (request:CallToolRequest): Promise<CallToolResult | JSONRPCError> => {
-
-    if (!process.env.TOOL_IDS) {
-      throw new Error("TOOLS is not set")
-    }
-    const TOOL_IDS = JSON.parse(process.env.TOOL_IDS);
-    
     const tools = await listTools(TOOL_IDS)
 
     const tool = tools.find(tool => tool.title === request.params.name)
