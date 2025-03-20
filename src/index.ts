@@ -101,6 +101,7 @@ server.setRequestHandler(
 async function runServer() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
+  consts() // remove this
   console.error("RelevanceAi MCP Server running on stdio");
 }
 
