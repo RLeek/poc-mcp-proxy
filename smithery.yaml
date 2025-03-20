@@ -31,8 +31,8 @@ startCommand:
         'dist/index.js'
       ], 
       env: { 
-        RELEVANCE_AUTH_TOKEN: config.relevanceAuthToken
-        RELEVANCE_REGION: config.relevanceRegion
+        RELEVANCE_AUTH_TOKEN: config.relevanceAuthToken,
+        RELEVANCE_REGION: config.relevanceRegion,
         TOOL_IDs: config.toolIds
-      } 
+      }
     })
