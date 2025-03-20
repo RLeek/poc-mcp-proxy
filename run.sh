@@ -10,5 +10,5 @@ done < $root/.env
 
 cd $root
 
-npm run --silent start 2>> $root/log.txt
+npm run --silent start
 

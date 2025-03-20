@@ -9,8 +9,8 @@ import {
   JSONRPCError
 } from '@modelcontextprotocol/sdk/types.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
-import { listTools, runTool } from './api.js';
-import { consts } from './utilities.js';
+import { listTools, runTool } from './src/api.js';
+import { consts } from './src/utilities.js';
 
 const server = new Server(
   {

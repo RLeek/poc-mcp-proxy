@@ -1,0 +1,4 @@
+Installing remote server. Please ensure you trust the server author, especially when sharing sensitive data.
+For information on Smithery's data policy, please visit: https://smithery.ai/docs/data-policy
+@RLeek/poc-mcp-proxy successfully installed for claude
+? Would you like to restart the claude app to apply changes? (Y/n) [67D[67C
