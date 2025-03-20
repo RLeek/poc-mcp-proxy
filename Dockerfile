@@ -2,17 +2,14 @@ FROM node:22.14.0-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json ./
+# Copy application code
+COPY . ./
 
 # Install pnpm and dependencies
 RUN npm install
-
-# Copy application code
-COPY . .
 
 # Build TypeScript
 RUN npm run build
 
 # Command will be provided by smithery.yaml
-CMD ["tsx", "src/index.ts"] 
+ENTRYPOINT ["node", "dist/src/index.js"] 

@@ -24,19 +24,25 @@ const server = new Server(
 )
 
 
+/*
 if (!process.env.RELEVANCE_AUTH_TOKEN) {
   throw new Error('RELEVANCE_AUTH_TOKEN is not set')
 }
-export const TOKEN = process.env.RELEVANCE_AUTH_TOKEN
+*/
+export const TOKEN = process.env.RELEVANCE_AUTH_TOKEN ?? "TEST"
 
+/*
 if (!process.env.RELEVANCE_REGION) {
   throw new Error('RELEVANCE_REGION is not set')
 }
-export const REGION = process.env.RELEVANCE_REGION
+*/
+export const REGION = process.env.RELEVANCE_REGION ?? "TEST"
 
+/*
 if (!process.env.TOOL_IDS) {
   throw new Error("TOOLS is not set")
 }
+*/
 export const TOOL_IDS = []
 
 export const BASE_API_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`

@@ -2,10 +2,10 @@
   "name": "poc-mcp-proxy",
   "version": "1.0.0",
   "description": "poc mcp proxy",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "type": "module",
   "scripts": {
-    "build": "tsc && chmod 755 dist/index.js",
+    "build": "tsc && chmod 755 dist/src/index.js",
     "start": "tsx src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "codegen": "npx tsx scripts/better-api-types.ts"
