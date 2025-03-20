@@ -46,7 +46,7 @@ export const listTools = async (
       {
         filter_type: 'exact_match',
         field: 'project',
-        condition_value: TOKEN.split(':')[0],
+        condition_value: consts().TOKEN.split(':')[0],
       },
       {
         filter_type: 'or',
