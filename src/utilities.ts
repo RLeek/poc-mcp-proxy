@@ -28,7 +28,7 @@ export const consts = () => {
         console.error("TOOLS is not set")
         throw new Error("TOOLS is not set")
     }
-    const TOOL_IDS = JSON.parse(process.env.TOOL_IDS);
+    const TOOL_IDS = process.env.TOOL_IDS.split(' ');
 
     const BASE_API_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`
 
