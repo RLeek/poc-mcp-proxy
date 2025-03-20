@@ -18,11 +18,4 @@ startCommand:
   commandFunction:
     # A function that produces the CLI command to start the MCP on stdio.
     |-
-    (config) => ({ 
-      command: 'node',
-      args: ['dist/index.js'], 
-      env: { 
-        RELEVANCE_AUTH_TOKEN: config.relevanceAuthToken,
-        RELEVANCE_REGION: config.relevanceRegion,
-      }
-    })
+    (config) => ({ command: 'node', args: ['dist/index.js'], env: { RELEVANCE_AUTH_TOKEN: config.relevanceAuthToken, RELEVANCE_REGION: config.relevanceRegion}})
