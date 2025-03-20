@@ -113,7 +113,6 @@ server.setRequestHandler(
 async function runServer() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  consts() // remove this
   server.sendLoggingMessage({
     level: "info",
     data: "Server started successfully",
