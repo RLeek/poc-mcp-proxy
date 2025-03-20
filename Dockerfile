@@ -1,23 +1,18 @@
-FROM node:22.12-alpine AS builder
-
-# Must be entire project because `prepare` script is run during `npm install` and requires all files.
-COPY . /app
-COPY tsconfig.json /tsconfig.json
+FROM node:22.14.0-alpine
 
 WORKDIR /app
 
-RUN --mount=type=cache,target=/root/.npm npm install
+# Copy package files
+COPY package.json package-lock.json ./
 
-FROM node:22.12-alpine AS release
+# Install pnpm and dependencies
+RUN npm install
 
-COPY --from=builder /app/dist /app/dist
-COPY --from=builder /app/package.json /app/package.json
-COPY --from=builder /app/package-lock.json /app/package-lock.json
+# Copy application code
+COPY . .
 
-ENV NODE_ENV=production
+# Build TypeScript
+RUN npm run build
 
-WORKDIR /app
-
-RUN npm ci --ignore-scripts --omit-dev
-
-ENTRYPOINT ["node", "dist/index.js"]
+# Command will be provided by smithery.yaml
+CMD ["node", "dist/index.js"] 
