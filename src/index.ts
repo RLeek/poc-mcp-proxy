@@ -27,6 +27,8 @@ const server = new Server(
 server.setRequestHandler(
   ListToolsRequestSchema, 
   async (request):Promise<ListToolsResult> => {
+    console.error("ListTool called")
+
     const tools = await listTools(consts().TOOL_IDS)
     return {
       tools: tools
@@ -46,8 +48,9 @@ server.setRequestHandler(
 server.setRequestHandler(
   CallToolRequestSchema,
   async (request:CallToolRequest): Promise<CallToolResult | JSONRPCError> => {
-    const tools = await listTools(consts().TOOL_IDS)
+    console.error("CallTool called")
 
+    const tools = await listTools(consts().TOOL_IDS)
     const tool = tools.find(tool => tool.title === request.params.name)
 
     // todo: not sure about this
