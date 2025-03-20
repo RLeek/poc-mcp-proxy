@@ -9,7 +9,7 @@ COPY . ./
 RUN npm install
 
 # Build TypeScript
-RUN npm run build
+RUN npm ci --ignore-scripts --omit-dev
 
 # Command will be provided by smithery.yaml
-ENTRYPOINT ["node", "dist/src/index.js"] 
+ENTRYPOINT ["node", "dist/index.js"] 
