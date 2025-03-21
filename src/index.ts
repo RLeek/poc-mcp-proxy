@@ -28,7 +28,7 @@ const server = new Server(
 server.setRequestHandler(
   ListToolsRequestSchema, 
   async (request):Promise<ListToolsResult> => {
-    const tools = await listTools(consts().TOOL_IDS)
+    //const tools = await listTools(consts().TOOL_IDS)
 
   return {
     "tools": [
