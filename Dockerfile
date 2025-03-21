@@ -12,4 +12,4 @@ RUN npm install
 RUN npm ci --ignore-scripts --omit-dev
 
 # Command will be provided by smithery.yaml
-ENTRYPOINT ["node", "dist/index.js"] 
+ENTRYPOINT ["node", "dist/src/index.js"] 

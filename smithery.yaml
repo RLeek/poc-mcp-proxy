@@ -24,7 +24,7 @@ startCommand:
     |-
     (config) => ({ 
       command: 'node', 
-      args: ['dist/index.js'], 
+      args: ['dist/src/index.js'], 
       env: { 
         RELEVANCE_AUTH_TOKEN: config.relevanceAuthToken,
         RELEVANCE_REGION: config.relevanceRegion,
