@@ -33,7 +33,24 @@ server.setRequestHandler(
       level: "info",
       data: "ListTool called",
     });
-    
+    try {
+      const tools = await listTools(consts().TOOL_IDS)
+    } catch (e) {
+      console.error("list tools called with exception" + (e as object).toString())
+      server.sendLoggingMessage({
+        level: "info",
+        data: "list tools called" + (e as object).toString()
+      });      
+    } finally {
+      console.error("list tools called")
+      server.sendLoggingMessage({
+        level: "info",
+        data: "list tools called"
+      });  
+    }
+
+
+
     return {
       tools: [
         {
@@ -46,11 +63,7 @@ server.setRequestHandler(
         }
       ]
     }
-    
-    const tools = await listTools(consts().TOOL_IDS)
-
-
-
+    /*
     return {
       tools: tools
         .map((tool):Tool => {
@@ -64,6 +77,7 @@ server.setRequestHandler(
           }
         })
     }
+        */
 })
 
 server.setRequestHandler(
