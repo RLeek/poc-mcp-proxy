@@ -31,7 +31,7 @@ server.setRequestHandler(
     //const tools = await listTools(consts().TOOL_IDS)
 
     // Does this owork?
-    await Delay(5000);
+    await Delay(10000);
   return {
     "tools": [
       {
