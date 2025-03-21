@@ -24,11 +24,8 @@ export const consts = () => {
     }
     const REGION = process.env.RELEVANCE_REGION
       
-    if (!process.env.TOOL_IDS) {
-        console.error("TOOL_IDS is not set")
-        throw new Error(JSON.stringify(process.env))
-    }
-    const TOOL_IDS = process.env.TOOL_IDS.split(' ');
+
+    const TOOL_IDS:Array<string> = [];
 
     const BASE_API_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`
 
