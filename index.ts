@@ -28,42 +28,10 @@ const server = new Server(
 server.setRequestHandler(
   ListToolsRequestSchema, 
   async (request):Promise<ListToolsResult> => {
-    console.error("ListTool called")
-    server.sendLoggingMessage({
-      level: "info",
-      data: "ListTool called",
-    });
-    try {
-      const tools = await listTools(consts().TOOL_IDS)
-    } catch (e) {
-      console.error("list tools called with exception" + (e as object).toString())
-      server.sendLoggingMessage({
-        level: "info",
-        data: "list tools called" + (e as object).toString()
-      });      
-    } finally {
-      console.error("list tools called")
-      server.sendLoggingMessage({
-        level: "info",
-        data: "list tools called"
-      });  
-    }
+    const tools = await listTools(consts().TOOL_IDS)
 
 
-
-    return {
-      tools: [
-        {
-          name: "Title",
-          inputSchema: {
-            type: 'object',
-            ...{}
-          },
-          description: "Description"
-        }
-      ]
-    }
-    /*
+    
     return {
       tools: tools
         .map((tool):Tool => {
@@ -77,7 +45,6 @@ server.setRequestHandler(
           }
         })
     }
-        */
 })
 
 server.setRequestHandler(
