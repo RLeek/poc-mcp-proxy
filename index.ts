@@ -33,9 +33,7 @@ server.setRequestHandler(
       level: "info",
       data: "ListTool called",
     });
-
-    const tools = await listTools(consts().TOOL_IDS)
-
+    
     return {
       tools: [
         {
@@ -48,6 +46,9 @@ server.setRequestHandler(
         }
       ]
     }
+    
+    const tools = await listTools(consts().TOOL_IDS)
+
 
 
     return {
