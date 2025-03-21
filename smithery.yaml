@@ -1,21 +1,7 @@
 # Smithery configuration file: https://smithery.ai/docs/deployments
 startCommand:
   type: stdio
-  configSchema:
-    # JSON Schema defining the configuration options for the MCP.
-    type: object
-    required:
-      - relevanceAuthToken
-      - relevanceRegion
-      - toolIds
-    properties:
-      relevanceAuthToken:
-        type: string
-        description: The authentication token for accessing the relevanceAI API.
-      relevanceRegion:
-        type: string
-        description: The region for the user accessing the relevanceAI API
-
+  configSchema: {}
   commandFunction:
     # A function that produces the CLI command to start the MCP on stdio.
     |-
@@ -23,7 +9,5 @@ startCommand:
       command: 'node', 
       args: ['dist/src/index.js'], 
       env: { 
-        RELEVANCE_AUTH_TOKEN: config.relevanceAuthToken,
-        RELEVANCE_REGION: config.relevanceRegion,
       }
     })
