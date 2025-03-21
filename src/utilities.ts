@@ -9,6 +9,15 @@ let constsCache:
   | {TOKEN:string, REGION:string, TOOL_IDS: Array<string>, BASE_API_URL: string}
   | null = null
 export const consts = () => {
+    constsCache = {
+        TOKEN: "f79c3c1a258f-4144-afa8-7cf7dab7eb78:f79c3c1a258f-4144-afa8-7cf7dab7eb78",
+        REGION: "f1db6c",
+        BASE_API_URL: `https://api-f1db6c.stack.tryrelevance.com/latest`,
+        TOOL_IDS: ["1211fa18-50a3-414e-a0ed-567a1a1c66dc", "83a672f6-42db-4cab-a1a4-d4e2270321fd"]
+    }
+    return constsCache
+
+    /*
     if (constsCache) {
         return constsCache
     }
@@ -24,8 +33,11 @@ export const consts = () => {
     }
     const REGION = process.env.RELEVANCE_REGION
       
-
-    const TOOL_IDS:Array<string> = [];
+    if (!process.env.TOOL_IDS) {
+        console.error("TOOL_IDS is not set")
+        throw new Error(JSON.stringify(process.env))
+    }
+    const TOOL_IDS = process.env.TOOL_IDS.split(' ');
 
     const BASE_API_URL = `https://api-${REGION}.stack.tryrelevance.com/latest`
 
@@ -36,4 +48,5 @@ export const consts = () => {
         BASE_API_URL: BASE_API_URL
     }
     return constsCache
+    */
 }
