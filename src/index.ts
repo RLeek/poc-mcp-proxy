@@ -10,7 +10,7 @@ import {
 } from '@modelcontextprotocol/sdk/types.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { listTools, runTool } from './api.js';
-import { consts } from './utilities.js';
+import { consts, Delay } from './utilities.js';
 
 const server = new Server(
   {
@@ -30,6 +30,8 @@ server.setRequestHandler(
   async (request):Promise<ListToolsResult> => {
     //const tools = await listTools(consts().TOOL_IDS)
 
+    // Does this owork?
+    await Delay(1000);
   return {
     "tools": [
       {
