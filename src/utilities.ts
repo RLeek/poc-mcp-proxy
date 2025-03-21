@@ -25,8 +25,8 @@ export const consts = () => {
     const REGION = process.env.RELEVANCE_REGION
       
     if (!process.env.TOOL_IDS) {
-        console.error("TOOLS is not set")
-        throw new Error("TOOLS is not set")
+        console.error("TOOL_IDS is not set")
+        throw new Error(JSON.stringify(process.env))
     }
     const TOOL_IDS = process.env.TOOL_IDS.split(' ');
 
