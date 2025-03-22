@@ -9,6 +9,7 @@ let constsCache:
   | {TOKEN:string, REGION:string, TOOL_IDS: Array<string>, BASE_API_URL: string}
   | null = null
 export const consts = () => {
+    /*
     constsCache = {
         TOKEN: "f79c3c1a258f-4144-afa8-7cf7dab7eb78:sk-NTdkYWViYzYtNjhmZC00ZTdlLWI5NmEtODVjOGVmYjMwNGU2",
         REGION: "f1db6c",
@@ -16,8 +17,8 @@ export const consts = () => {
         TOOL_IDS: ["1211fa18-50a3-414e-a0ed-567a1a1c66dc","83a672f6-42db-4cab-a1a4-d4e2270321fd"]
     }
     return constsCache
+    */
 
-    /*
     if (constsCache) {
         return constsCache
     }
@@ -48,5 +49,5 @@ export const consts = () => {
         BASE_API_URL: BASE_API_URL
     }
     return constsCache
-    */
+
 }
