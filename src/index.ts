@@ -28,70 +28,62 @@ const server = new Server(
 server.setRequestHandler(
   ListToolsRequestSchema, 
   async (request):Promise<ListToolsResult> => {
-    //const tools = await listTools(consts().TOOL_IDS)
-
-    // Does this owork?
-    await Delay(10000);
-  return {
-    "tools": [
-      {
-        "name": "Extract_and_Summarize_Website_Content",
-        "description": "Extracts content from a specified website and summarizes it according to a defined objective.",
-        "inputSchema": {
-          "type": "object",
-          "properties": {
-            "url": {
-              "type": "string",
-              "title": "Target Website URL",
-              "description": "The URL of the website to be scraped. Ensure it starts with https://.",
-              "frontend_metadata": {
-                "required": true
+    try {
+      const tools = await listTools(consts().TOOL_IDS)
+      return {
+        tools: tools
+          .map((tool):Tool => {
+            return {
+              name: tool.title,
+              inputSchema: {
+                type: 'object',
+                ...tool.params_schema,
               },
-              "order": 0,
-              "metadata": {}
-            },
-            "object_of_scrape": {
-              "type": "string",
-              "metadata": {
-                "content_type": "long_text"
-              },
-              "frontend_metadata": {
-                "required": true
-              },
-              "order": 1,
-              "title": "Scraping Objective",
-              "description": "Define the main goal of the website scraping and specify the key data points to extract."
+              description: tool.description
             }
-          },
-          "required": [
-            "url",
-            "object_of_scrape"
-          ]
-        }
+          })
       }
-    ]
-  }
-  
-
-    /*
-    const tools = await listTools(consts().TOOL_IDS)
-
-
-    
-    return {
-      tools: tools
-        .map((tool):Tool => {
-          return {
-            name: tool.title,
-            inputSchema: {
-              type: 'object',
-              ...tool.params_schema,
-            },
-            description: tool.description
+    }  catch (e) {
+      return {
+        "tools": [
+          {
+            "name": "Extract_and_Summarize_Website_Content",
+            "description": (e as object).toString(),
+            "inputSchema": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "title": "Target Website URL",
+                  "description": "The URL of the website to be scraped. Ensure it starts with https://.",
+                  "frontend_metadata": {
+                    "required": true
+                  },
+                  "order": 0,
+                  "metadata": {}
+                },
+                "object_of_scrape": {
+                  "type": "string",
+                  "metadata": {
+                    "content_type": "long_text"
+                  },
+                  "frontend_metadata": {
+                    "required": true
+                  },
+                  "order": 1,
+                  "title": "Scraping Objective",
+                  "description": "Define the main goal of the website scraping and specify the key data points to extract."
+                }
+              },
+              "required": [
+                "url",
+                "object_of_scrape"
+              ]
+            }
           }
-        })
+        ]
+      }
     }
-    */
 })
 
 server.setRequestHandler(
