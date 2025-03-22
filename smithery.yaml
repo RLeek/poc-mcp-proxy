@@ -13,6 +13,9 @@ startCommand:
       relevanceRegion:
         type: string
         description: The region for the user accessing the relevanceAI API
+      toolIds:
+        type: string
+        description: The list of tools to access from relevanceAI API
 
   commandFunction:
     # A function that produces the CLI command to start the MCP on stdio.
@@ -23,5 +26,6 @@ startCommand:
       env: { 
         RELEVANCE_AUTH_TOKEN: config.relevanceAuthToken,
         RELEVANCE_REGION: config.relevanceRegion,
+        TOOL_IDS: config.toolIds
       }
     })
